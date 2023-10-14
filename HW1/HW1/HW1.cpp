@@ -22,7 +22,6 @@ int main() {
 
 	int v;
 	fin >> v;
-	//cout << "v = " << v << endl;
 
 	/*Sets*/
 	set<int> V;
@@ -33,7 +32,7 @@ int main() {
 	set<pair<int, int> > A;
 	for (int i = 0; i <= v; i++) {
 		for (int j = 1; j <= v + 1; j++) {
-			if(i != j && !(i == 0 && j == 6))//
+			if (i != j && !(i == 0 && j == 6))//
 				A.insert(make_pair(i, j));
 		}
 	}
@@ -44,7 +43,7 @@ int main() {
 		if (item)
 			C1.insert(i);
 	}
-	
+
 	set<int> C2;
 	for (int i = 0; i <= v + 1; i++) {
 		fin >> item;
@@ -70,7 +69,7 @@ int main() {
 		if (C2.find(i.first) == C2.end() && C2.find(i.second) == C2.end() && i.first != v + 1)
 			A1.insert(i);
 	}
-	
+
 	set<pair<int, int> > A2 = A;
 
 	set<int> deltaPlus1[7], deltaMinus1[7];
@@ -126,52 +125,39 @@ int main() {
 		string name;
 
 		/*Variables*/
-		cout << "xi_j\n";
+		//cout << "xi_j\n";
 		GRBVar x[7][7];
-		/*for (auto& k : A1) {
-			name = "x" + to_string(k.first) + "_" + to_string(k.second);
-			x[k.first][k.second] = model.addVar(0, 1, 0, GRB_BINARY, name);
-		}*/
-
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
-				/*if (A1.find(make_pair(i, j)) != A1.end()) {
+				if (A1.find(make_pair(i, j)) != A1.end()) {
 					name = "x" + to_string(i) + "_" + to_string(j);
 					x[i][j] = model.addVar(0, 1, 0, GRB_BINARY, name);
 				}
 				else {
 					name = "x" + to_string(i) + "_" + to_string(j);
 					x[i][j] = model.addVar(0, 0, 0, GRB_BINARY, name);
-				}*/
-				name = "x" + to_string(i) + "_" + to_string(j);
-				x[i][j] = model.addVar(0, 1, 0, GRB_BINARY, name);
+				}
+				//name = "x" + to_string(i) + "_" + to_string(j);
+				//x[i][j] = model.addVar(0, 1, 0, GRB_BINARY, name);
 			}
 		}
 
-		cout << "yi_j\n";
-		/*GRBVar y[7][7];
-		for (auto& k : A2) {
-			name = "y" + to_string(k.first) + "_" + to_string(k.second);
-			y[k.first][k.second] = model.addVar(0, 1, 0, GRB_BINARY, name);
-		}*/
-
+		//cout << "yi_j\n";
 		GRBVar y[7][7];
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
-				/*if (A2.find(make_pair(i, j)) != A2.end()) {
+				if (A2.find(make_pair(i, j)) != A2.end()) {
 					name = "y" + to_string(i) + "_" + to_string(j);
 					y[i][j] = model.addVar(0, 1, 0, GRB_BINARY, name);
 				}
 				else {
 					name = "y" + to_string(i) + "_" + to_string(j);
 					y[i][j] = model.addVar(0, 0, 0, GRB_BINARY, name);
-				}*/
-				name = "y" + to_string(i) + "_" + to_string(j);
-					y[i][j] = model.addVar(0, 1, 0, GRB_BINARY, name);
+				}
 			}
 		}
 
-		cout << "ti\n";
+		//cout << "ti\n";
 		GRBVar t[7];
 		for (auto& i : V1) {
 			name = "t" + to_string(i);
@@ -180,7 +166,7 @@ int main() {
 		t[0] = model.addVar(-GRB_INFINITY, GRB_INFINITY, 0, GRB_CONTINUOUS, name);
 		t[6] = model.addVar(-GRB_INFINITY, GRB_INFINITY, 0, GRB_CONTINUOUS, name);
 
-		cout << "pi\n";
+		//cout << "pi\n";
 		GRBVar p[7];
 		for (int i = 0; i <= v + 1; i++) {
 			if (V2.find(i) != V2.end() || i == 0 || i == v + 1) {
@@ -189,7 +175,7 @@ int main() {
 			}
 		}
 
-		cout << "zi_j\n";
+		//cout << "zi_j\n";
 		GRBVar z[7][7];
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
@@ -201,7 +187,7 @@ int main() {
 		}
 
 		/*Objective*/
-		cout << "obj(1)\n";
+		//cout << "obj(1)\n";
 		GRBLinExpr sum = 0;
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
@@ -217,7 +203,7 @@ int main() {
 		model.setObjective(sum, GRB_MINIMIZE);
 
 		/*Constraints*/
-		cout << "c1(2)\n";
+		//cout << "c1(2)\n";
 		for (auto& i : C) {
 			sum = 0;
 			for (auto& j : deltaPlus1[i]) {
@@ -230,64 +216,64 @@ int main() {
 			model.addConstr(sum >= 1, name);
 		}
 
-		cout << "c2(3)\n";
+		//cout << "c2(3)\n";
 		sum = 0;
-		for(auto& j : deltaPlus1[0])
-			sum  += x[0][j];
+		for (auto& j : deltaPlus1[0])
+			sum += x[0][j];
 		name = "c2";
 		model.addConstr(sum == 1, name);
 
-		cout << "c3(4)\n";
+		//cout << "c3(4)\n";
 		sum = 0;
-		for(auto& j : deltaPlus2[0]) 
+		for (auto& j : deltaPlus2[0])
 			sum += y[0][j];
 		name = "c3";
 		model.addConstr(sum == 1, name);
 
-		cout << "c4(5)\n";
+		//cout << "c4(5)\n";
 		set<int> ob5 = V1;
 		ob5.erase(0);
 		ob5.erase(v + 1);
 		for (auto& j : ob5) {
 			sum = 0;
-			for (auto& i : deltaMinus1[j]) 
-					sum += x[i][j];
+			for (auto& i : deltaMinus1[j])
+				sum += x[i][j];
 			for (auto& i : deltaPlus1[j]) {
-					sum -= x[j][i];
+				sum -= x[j][i];
 			}
 			name = "c4_" + to_string(j);
 			model.addConstr(sum == 0, name);
 		}
 
-		cout << "c5(6)\n";
+		//cout << "c5(6)\n";
 		set<int> ob6 = V2;
 		ob6.erase(0);
 		ob6.erase(v + 1);
 		for (auto& j : ob6) {
 			sum = 0;
-			for (auto& i : deltaMinus2[j]) 
-					sum += y[i][j]; 
-			for (auto& i : deltaPlus2[j]) 
-					sum -= y[j][i]; 
+			for (auto& i : deltaMinus2[j])
+				sum += y[i][j];
+			for (auto& i : deltaPlus2[j])
+				sum -= y[j][i];
 			name = "c5_" + to_string(j);
 			model.addConstr(sum == 0, name);
 		}
 
-		cout << "c6(7)\n";
+		//cout << "c6(7)\n";
 		sum = 0;
 		for (auto& i : deltaMinus1[v + 1])
 			sum += x[i][v + 1];
 		name = "c6";
 		model.addConstr(sum == 1, name);
 
-		cout << "c7(8)\n";
+		//cout << "c7(8)\n";
 		sum = 0;
 		for (auto& i : deltaMinus2[v + 1])
 			sum += y[i][v + 1];
 		name = "c7";
 		model.addConstr(sum == 1, name);
 
-		cout << "c8(9)\n";
+		//cout << "c8(9)\n";
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
 				if (A1.find(make_pair(i, j)) != A1.end() && A2.find(make_pair(i, j)) != A2.end()) {
@@ -299,7 +285,7 @@ int main() {
 			}
 		}
 
-		cout << "c9(10)\n";
+		//cout << "c9(10)\n";
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
 				if (A1.find(make_pair(i, j)) != A1.end() && A2.find(make_pair(i, j)) != A2.end()) {
@@ -311,19 +297,19 @@ int main() {
 			}
 		}
 
-		cout << "c10(11)\n";
+		//cout << "c10(11)\n";
 		for (auto& k : A1) {
 			name = "c10_" + to_string(k.first) + to_string(k.second);
 			model.addConstr(t[k.first] + s1[k.first] + d[k.first][k.second] - t[k.second] <= (1 - x[k.first][k.second]) * M, name);
 		}
 
-		cout << "c11(12)\n";
+		//cout << "c11(12)\n";
 		for (auto& k : A2) {
 			name = name = "c11_" + to_string(k.first) + to_string(k.second);
 			model.addConstr(p[k.first] + s2[k.first] + r[k.first][k.second] - p[k.second] <= (1 - y[k.first][k.second]) * M, name);
 		}
 
-		cout << "c12(13)\n";
+		//cout << "c12(13)\n";
 		set<int> ob13 = V1;
 		V1.insert(0);
 		V1.insert(v + 1);
@@ -334,7 +320,7 @@ int main() {
 			model.addConstr(b[i] >= t[i], name);
 		}
 
-		cout << "c13(14)\n";
+		//cout << "c13(14)\n";
 		set<int> ob14 = V2;
 		ob14.insert(0);
 		ob14.insert(v + 1);
@@ -345,7 +331,7 @@ int main() {
 			model.addConstr(p[i] <= b[i], name);
 		}
 
-		cout << "c14(15)\n";
+		//cout << "c14(15)\n";
 		set<int> ob15;
 		set_intersection(V1.begin(), V1.end(), V2.begin(), V2.end(), inserter(ob15, ob15.end()));
 		ob15.erase(0);
@@ -364,7 +350,7 @@ int main() {
 			model.addConstr(t[i] <= p[i] - (sum - 2) * M, name);
 		}
 
-		cout << "c15(16)\n";
+		//cout << "c15(16)\n";
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
 				for (int l = 0; l <= v + 1; l++) {
@@ -376,9 +362,10 @@ int main() {
 							if (deltaMinus1[l].find(m) != deltaMinus1[l].end())
 								sum += x[m][l];
 						}
+						name = "c15_" + to_string(i) + to_string(j) + to_string(l);
+						model.addConstr(sum >= 2 - ((1 - y[i][j]) * M + x[i][j] * M + (1 - y[j][l]) * M + x[j][l] * M), name);
 					}
-					name = "c15_" + to_string(i) + to_string(j) + to_string(l);
-					model.addConstr(sum >= 2 - ((1 - y[i][j]) * M + x[i][j] * M + (1 - y[j][l]) * M + x[j][l] * M), name);
+					
 				}
 			}
 		}
@@ -390,12 +377,7 @@ int main() {
 			}
 		}
 
-		/*for (auto& i : ob17) {
-		cout << i.first << " " << i.second << endl;
-		}*/
-
-		/*cout << "c16(17)\n";
-		
+		//cout << "c16(17)\n";
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
 				for (int l = 0; l <= v + 1; l++) {
@@ -407,14 +389,15 @@ int main() {
 							if (deltaMinus1[l].find(m) != deltaMinus1[l].end())
 								sum += x[m][l];
 						}
+						name = "c16_" + to_string(i) + to_string(j) + to_string(l);
+						model.addConstr(sum >= 2 - ((1 - y[i][j]) * M + (1 - y[j][l]) * M), name);
 					}
-					name = "c16_" + to_string(i) + to_string(j) + to_string(l);
-					model.addConstr(sum >= 2 - ((1 - y[i][j]) * M + (1 - y[j][l]) * M), name);
+					
 				}
 			}
-		}*/
+		}
 
-		cout << "c17(18)\n";
+		//cout << "c17(18)\n";
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
 				for (int l = 0; l <= v + 1; l++) {
@@ -426,14 +409,14 @@ int main() {
 							if (deltaMinus1[l].find(m) != deltaMinus1[l].end())
 								sum += x[m][l];
 						}
+						name = "c17_" + to_string(i) + to_string(j) + to_string(l);
+						model.addConstr(sum >= 2 - ((1 - y[i][j]) * M + (1 - y[j][l]) * M + x[j][l] * M), name);
 					}
-					name = "c17_" + to_string(i) + to_string(j) + to_string(l);
-					model.addConstr(sum >= 2 - ((1 - y[i][j]) * M + (1 - y[j][l]) * M + x[j][l] * M), name);
 				}
 			}
 		}
 
-		cout << "c18(19)\n";
+		//cout << "c18(19)\n";
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
 				for (int l = 0; l <= v + 1; l++) {
@@ -445,14 +428,14 @@ int main() {
 							if (deltaMinus1[l].find(m) != deltaMinus1[l].end())
 								sum += x[m][l];
 						}
+						name = "c18_" + to_string(i) + to_string(j) + to_string(l);
+						model.addConstr(sum >= 2 - ((1 - y[j][l]) * M + (1 - y[i][j]) * M + x[i][j] * M), name);
 					}
-					name = "c18_" + to_string(i) + to_string(j) + to_string(l);
-					model.addConstr(sum >= 2 - ((1 - y[j][l]) * M + (1 - y[i][j]) * M + x[i][j] * M), name);
 				}
 			}
 		}
 
-		cout << "c19(20)\n";
+		//cout << "c19(20)\n";
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
 				for (int l = 0; l <= v + 1; l++) {
@@ -464,7 +447,7 @@ int main() {
 			}
 		}
 
-		cout << "c20(21)\n";
+		//cout << "c20(21)\n";
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
 				for (int l = 0; l <= v + 1; l++) {
@@ -476,7 +459,7 @@ int main() {
 			}
 		}
 
-		cout << "c21(22)\n";
+		//cout << "c21(22)\n";
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
 				for (int l = 0; l <= v + 1; l++) {
@@ -488,7 +471,7 @@ int main() {
 			}
 		}
 
-		cout << "c22(23)\n";
+		//cout << "c22(23)\n";
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
 				for (int l = 0; l <= v + 1; l++) {
@@ -500,7 +483,7 @@ int main() {
 			}
 		}
 
-		cout << "c23(24)\n";
+		//cout << "c23(24)\n";
 		for (auto& i : C1) {
 			sum = 0;
 			for (auto& j : deltaMinus1[i]) {
@@ -511,7 +494,7 @@ int main() {
 		}
 
 
-		cout << "c24(25)\n";
+		//cout << "c24(25)\n";
 		GRBLinExpr sum2 = 0;
 		for (auto& i : C1) {
 			sum = 0;
@@ -523,23 +506,34 @@ int main() {
 			name = "c24_" + to_string(i);
 			model.addConstr(sum == sum2, name);
 		}
-		
+
 		model.optimize();
-		/*cout << "Obj = " << model.get(GRB_DoubleAttr_ObjVal) << endl;
-		cout << "貨車路線 : \n";
+		cout << "*--- Result ---*\n" 
+			 << "Objective value = " << model.get(GRB_DoubleAttr_ObjVal) << endl;
+				
+		cout << "貨車路線 : ";
+		int next = 0;
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
-				cout << x[i][j].get(GRB_DoubleAttr_X);
+				if (x[next][j].get(GRB_DoubleAttr_X) == 1) {
+					cout << next <<  " ";
+					next = j;
+				}
 			}
-			cout << "\n";
 		}
-		cout << "無人機 : \n";
+		cout << next;
+
+		cout << "\n無人機 : ";
+		next = 0;
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
-				cout << y[i][j].get(GRB_DoubleAttr_X);
+				if (y[next][j].get(GRB_DoubleAttr_X) == 1) {
+					cout << next << " ";
+					next = j;
+				}
 			}
-			cout << "\n";
-		}*/
+		}
+		cout << next << "\n";
 		//model.computeIIS();
 		//model.write("model.ilp");
 
@@ -555,4 +549,3 @@ int main() {
 	system("pause");
 	return 0;
 }
-
