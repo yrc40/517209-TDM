@@ -511,24 +511,24 @@ int main() {
 		cout << "*--- Result ---*\n" 
 			 << "Objective value = " << model.get(GRB_DoubleAttr_ObjVal) << endl;
 				
-		cout << "貨車路線 : ";
+		cout << "Truck : ";
 		int next = 0;
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
 				if (x[next][j].get(GRB_DoubleAttr_X) == 1) {
-					cout << next <<  " ";
+					cout << next <<  " -> ";
 					next = j;
 				}
 			}
 		}
 		cout << next;
 
-		cout << "\n無人機 : ";
+		cout << "\nDrone : ";
 		next = 0;
 		for (int i = 0; i <= v + 1; i++) {
 			for (int j = 0; j <= v + 1; j++) {
 				if (y[next][j].get(GRB_DoubleAttr_X) == 1) {
-					cout << next << " ";
+					cout << next << " -> ";
 					next = j;
 				}
 			}
