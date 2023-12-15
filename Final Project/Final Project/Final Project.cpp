@@ -285,20 +285,107 @@ int main() {
 		cout << i << " ";
 	}
 
-	vector<int> m;
-	for (int i = 0; i < 2; i++) {
-		fin >> inputint;
-		m.push_back(inputint);
+	int m;
+	fin >> m;
+	cout << "\nm: " << m;
+
+	vector<double> f;
+	for (int i = 0; i < K; i++) {
+		fin >> inputdouble;
+		f.push_back(inputdouble);
 	}
-	cout << "\nmi: ";
-	for (auto& i : m) {
+	cout << "\nfi: ";
+	for (auto& i : f) {
 		cout << i << " ";
 	}
-	cout << "\n";
 
 	fin.close();
 
-	GRBEnv env = GRBEnv();
-	GRBModel model = GRBModel(env);
-	model.optimize();
+
+	try {
+
+		GRBEnv env = GRBEnv();
+		GRBModel model = GRBModel(env);
+
+		/*Variables*/
+		string name;
+
+		vector<vector<GRBVar> > u; //u_i^p
+		for (int i = 0; i <= c + 1; i++) {
+			vector<GRBVar> row;
+			for (int p = 0; p < v; p++) {
+				name = "u" + to_string(i) + to_string(p);
+				row.push_back(model.addVar(0, GRB_INFINITY, 0, GRB_CONTINUOUS, name));
+			}
+			u.push_back(row);
+		}
+
+		vector<vector<vector<GRBVar> > > x; //x_ij^p
+		for (int i = 0; i < c + 1; i++) { //0-2
+			vector<vector<GRBVar> > len;
+			for (int j = 1; j <= c + 1; j++) { //1-3
+				vector<GRBVar> wid;
+				for (int p = 0; p < v; p++) {
+					if (i != j) {
+						name = "x" + to_string(i) + to_string(j) + to_string(p);
+						wid.push_back(model.addVar(0, 1, 0, GRB_BINARY, name));
+					}
+				}
+				len.push_back(wid);
+			}
+			x.push_back(len);
+		}
+
+
+		vector<GRBVar> U; //Ui
+		for (int i = 1; i <= c; i++) {
+			name = "U" + to_string(i);
+			U.push_back(model.addVar(0, GRB_INFINITY, 0, GRB_CONTINUOUS, name));
+		}
+
+		vector<vector<GRBVar> > y; //y_i^p
+		for (int i = 0; i <= e; i++) {
+			vector<GRBVar> row;
+			for (int p = 0; p < v; p++) {
+				name = "y" + to_string(i) + to_string(p);
+				row.push_back(model.addVar(0, 1, 0, GRB_BINARY, name));
+			}
+			y.push_back(row);
+		}
+
+		/*Objective Function*/
+
+		GRBLinExpr sum = 0;
+		for (auto& i : A) {
+			for (auto& p : T) {
+				if(T1.find(p) != T1.end()) sum += f[0] * d[i.first][i.second]* x[i.first][i.second-1][p];
+				else if (T2.find(p) != T2.end()) sum += f[1] * d[i.first][i.second] * x[i.first][i.second-1][p];
+				else if(T3.find(p) != T3.end()) sum += f[2] * d[i.first][i.second] * x[i.first][i.second-1][p];
+			}
+		}
+		for (auto& j : C) {
+			for (auto& p : T1) sum += t[0] * x[0][j-1][p];
+			for (auto& p : T2) sum += t[1] * x[0][j-1][p];
+			for (auto& p : T3) sum += t[2] * x[0][j-1][p];
+		}
+		for (auto& p : T) {
+			for(auto& i : E) {
+				sum += m * y[i][p];
+			}
+		}
+		model.setObjective(sum, GRB_MINIMIZE);
+
+		model.optimize();
+	} 
+	catch (GRBException e) {
+		cout << "Error code = " << e.getErrorCode() << endl;
+		cout << e.getMessage() << endl;
+	}
+	catch (...) {
+		cout << "Exception during optimization" << endl;
+	}
+
+	system("pause");
+	return 0;
+	
 }
