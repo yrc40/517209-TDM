@@ -1,0 +1,16 @@
+\ Model (null)_copy
+\ LP format - for model browsing. Use MPS format to capture full model detail.
+Minimize
+ 
+Subject To
+ c1-2_i1: x120 + x121 + x122 + x123 + x124 + x125 + x126 = 1
+ c13b_i1_p1: u11 - 960 x121 <= 0
+ c13b_i1_p3: u13 - 960 x123 <= 0
+ c15-1_i1_p1: - u11 <= -360
+ c15-1_i1_p3: - u13 <= -360
+Bounds
+ u11 free
+ u13 free
+Binaries
+ x120 x121 x122 x123 x124 x125 x126
+End
