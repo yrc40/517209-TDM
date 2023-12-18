@@ -395,7 +395,7 @@ int main() {
 			}
 		}
 
-		sum = 0;
+		/*sum = 0;
 		for (auto& i : C) {
 			if (C7.find(i) == C7.end()) { // i in C\C7
 				for (auto& p : T) {
@@ -409,7 +409,7 @@ int main() {
 				model.addConstr(sum == 1, name);
 				sum = 0;
 			}
-		}/**/
+		}*//**/
 
 		//c2
 		set<int> c2obj;
@@ -479,7 +479,7 @@ int main() {
 		for (auto& p : T) {
 			for (auto& k : A) {
 				if (k.first == 0) {
-					sum = x[0][k.second - 1][p];
+					sum += x[0][k.second - 1][p];
 				}
 			}
 			name = "c6_p" + to_string(p);
@@ -527,7 +527,6 @@ int main() {
 				} 
 			}
 		}
-		
 		//10
 		for (auto& p : T) {
 			for (auto& k : A) {
@@ -566,16 +565,16 @@ int main() {
 		for (auto& p : T) {
 			for (auto& i : C) {
 				for (auto& k : A) {
-					if (i == k.first) sum += x[i][k.second - 1][p];
+					if (i == k.first && k.second != c+1) sum += x[i][k.second - 1][p];
 				}
 				name = "c13a_i" + to_string(i) + "_p" + to_string(p);
-				model.addConstr(a[i - 1] * sum <= u[i][p], name);
+				model.addConstr(a[i - 1]-(1-sum)*M <= u[i][p], name);
 				sum = 0;
 				for (auto& k : A) {
-					if (i == k.first) sum += x[i][k.second - 1][p];
+					if (i == k.first && k.second != c+1) sum += x[i][k.second - 1][p];
 				}
 				name = "c13b_i" + to_string(i) + "_p" + to_string(p);
-				model.addConstr(u[i][p] <= b[i - 1] * sum, name);
+				model.addConstr(u[i][p] <= b[i - 1] + (1-sum)*M, name);
 				sum = 0;
 			}
 		}
