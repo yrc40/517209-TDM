@@ -13,7 +13,7 @@ int main() {
 	double inputdouble;
 
 	fstream fin;
-	fin.open("C:/Users/Sharo/Desktop/data/case1.txt", ios::in);
+	fin.open("C:/Users/User/Desktop/data/case1.txt", ios::in);
 	if (!fin) {
 		cerr << "Can't open file!\n";
 		system("pause");
@@ -379,42 +379,45 @@ int main() {
 		/*Constraints*/
 
 		//c1
+		set<int> c1obj1;
+		set_union(C1.begin(), C1.end(), C2.begin(), C2.end(),
+			std::inserter(c1obj1, c1obj1.begin()));
+		set_union(c1obj1.begin(), c1obj1.end(), C3.begin(), C3.end(),
+			std::inserter(c1obj1, c1obj1.begin()));
 		sum = 0;
-		for (auto& j : C) {
-			if (C7.find(j) == C7.end()) { // j in C\C7
-				for (auto& p : T) {
-					for (auto& i : A) {
-						if (j == i.second) {
-							sum += x[i.first][i.second - 1][p];
-						}
-					}
+		for (auto& j : c1obj1) {
+			for (auto& p : T) {
+				for (auto& i : A) {
+					if(j==i.second) sum += x[i.first][i.second - 1][p];
 				}
-				name = "c1_j" + to_string(j);
-				model.addConstr(sum == 1, name);
-				sum = 0;
 			}
+			name = "c1-1_j" + to_string(j);
+			model.addConstr(sum == 1, name);
+			sum = 0;
 		}
-
-		/*sum = 0;
-		for (auto& i : C) {
-			if (C7.find(i) == C7.end()) { // i in C\C7
-				for (auto& p : T) {
-					for (auto& j : A) {
-						if (i == j.first) {
-							sum += x[j.first][j.second - 1][p];
-						}
-					}
-				}
-				name = "c1-2_i" + to_string(i);
-				model.addConstr(sum == 1, name);
-				sum = 0;
-			}
-		}*//**/
-
-		//c2
+		
+		set<int> c1obj2;
+		set_union(C4.begin(), C4.end(), C5.begin(), C5.end(),
+			std::inserter(c1obj2, c1obj2.begin()));
+		set_union(c1obj2.begin(), c1obj2.end(), C6.begin(), C6.end(),
+			std::inserter(c1obj2, c1obj2.begin()));
 		set<int> c2obj;
 		set_union(T2.begin(), T2.end(), T3.begin(), T3.end(),
 			std::inserter(c2obj, c2obj.begin()));
+		sum = 0;
+		for (auto& j : c1obj2) {
+			for (auto& p : c2obj) {
+				for (auto& i : A) {
+					if (j == i.second) sum += x[i.first][i.second - 1][p];
+				}
+			}
+			name = "c1-2_j" + to_string(j);
+			model.addConstr(sum == 1, name);
+			sum = 0;
+		}
+
+		//c2
+		
 		sum = 0;
 		for (auto& i : C7) {
 			for (auto& p : c2obj) {
@@ -499,7 +502,7 @@ int main() {
 				model.addConstr(sum == 0, name);
 				sum = 0;
 			}
-		}/**/
+		}
 
 		//c8
 		sum = 0;
@@ -513,10 +516,10 @@ int main() {
 		}
 		
 		//c9
-		set<int> c9obj1; // I\C7, c+1
+		set<int> c9obj1; // I\C7&&{c+1}
 		set_difference(I.begin(), I.end(),C7.begin(), C7.end(), std::inserter(c9obj1, c9obj1.begin()));
 		c9obj1.erase(c + 1);
-		set<int> c9obj2; // I\C7, 0
+		set<int> c9obj2; // I\C7&&{0}
 		set_difference(I.begin(), I.end(), C7.begin(), C7.end(), std::inserter(c9obj2, c9obj2.begin()));
 		c9obj1.erase(0);
 		for (auto& p : T) {
@@ -604,21 +607,6 @@ int main() {
 		c16obj.erase(0);
 		GRBLinExpr sum2 = 0;
 		sum = 0;
-		/*for (auto& p : T) {
-			for (auto& i : C) {//12
-				for (auto& j : c16obj) {//123
-					sum += g[i - 1] * x[3][j-1][p];
-				}
-				sum2 += sum;
-				sum = 0;
-			}
-			name = "c16_p" + to_string(p);
-			if(T1.find(p) != T1.end()) model.addConstr(sum2 <= W[0], name);
-			else if(T2.find(p) != T2.end()) model.addConstr(sum2 <= W[1], name);
-			else if(T3.find(p) != T3.end()) model.addConstr(sum2 <= W[2], name);
-			sum2 = 0;
-		}*/
-		sum = 0;
 		for (auto& p : T) {
 			for (auto& k : A) {
 				if (k.first != 0) {
@@ -633,7 +621,7 @@ int main() {
 		}
 
 		//17
-		/*sum = 0;
+		sum = 0;
 		for (auto& p : T) {
 			for (auto& k : A) {
 				if (k.first != 0) {
@@ -723,8 +711,6 @@ int main() {
 				}
 				name = "c23_p" + to_string(p) + "_j" + to_string(j);
 				model.addConstr(2 * sum2 <= sum, name);
-				cout << "sum2: ";
-				cout << sum2 << " ";
 				sum = 0;
 				sum2 = 0;
 			}
@@ -744,11 +730,29 @@ int main() {
 				sum = 0;
 				sum2 = 0;
 			}
-		}*/
+		}
 
 		model.optimize();
-		model.computeIIS();
-		model.write("model.ilp");
+		cout << "xijp:\n";
+		for (auto& p : T) {
+			for (int i = 0; i < c + 1; i++) {
+				for (int j = 1; j <= c + 1; j++) {
+					if(i != j) cout << abs(x[i][j-1][p].get(GRB_DoubleAttr_X));
+				}
+				cout << "\n";
+			}
+			cout << "\n";
+		}
+		cout << "yip:\n";
+		for (auto& i : E) {
+			for (auto& p : T) {
+				cout << y[i][p].get(GRB_DoubleAttr_X) << " ";
+			}
+			cout << "\n";
+		}
+		
+		//model.computeIIS();
+		//model.write("model.ilp");
 	} 
 	catch (GRBException e) {
 		cout << "Error code = " << e.getErrorCode() << endl;
