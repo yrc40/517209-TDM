@@ -735,6 +735,16 @@ int main() {
 				sum2 = 0;
 			}
 		}
+		//25
+		sum = 0;
+		for (auto& k : E) {
+			for (auto& p : T) {
+				sum += y[k][p];
+			}
+			name = "c25_p" + to_string(k);
+			model.addConstr(sum <= 1, name);
+			sum = 0;
+		}
 
 		model.optimize();
 		cout << "xijp:\n";
