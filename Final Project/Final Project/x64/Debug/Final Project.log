@@ -1,2 +1,3 @@
 ﻿  Final Project.cpp
-  Final Project.vcxproj -> C:\Users\sharo\Downloads\配送\517209-TDM\Final Project\x64\Debug\Final Project.exe
+E:\coursesMaterial\1121\517209-TDM\Final Project\Final Project\Final Project.cpp(389,12): warning C4244: '引數': 將 'unsigned __int64' 轉換為 'double'，由於類型不同，可能導致資料遺失
+  Final Project.vcxproj -> E:\coursesMaterial\1121\517209-TDM\Final Project\x64\Debug\Final Project.exe

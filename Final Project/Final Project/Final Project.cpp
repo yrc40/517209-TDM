@@ -13,7 +13,7 @@ int main() {
 	double inputdouble;
 
 	fstream fin;
-	fin.open("C:/Users/Sharo/Desktop/data/case3.txt", ios::in);
+	fin.open("C:/Users/User/Desktop/data/case1.txt", ios::in);
 	if (!fin) {
 		cerr << "Can't open file!\n";
 		system("pause");
@@ -354,6 +354,18 @@ int main() {
 			y.push_back(row);
 		}
 
+		vector<vector<GRBVar> > delta; //delta_i^p
+		for (int i = 0; i <= c; i++) {
+			vector<GRBVar> row;
+			if (C7.find(i) != C7.end()) {
+				for (int p = 0; p < v; p++) {
+					name = "delta" + to_string(i) + to_string(p);
+					row.push_back(model.addVar(0, 1, 0, GRB_BINARY, name));
+				}
+			}
+			delta.push_back(row);
+		}
+
 		/*Objective Function*/
 
 		GRBLinExpr sum = 0;
@@ -370,10 +382,11 @@ int main() {
 			for (auto& p : T3) sum += t[2] * x[0][j-1][p];
 		}
 		for (auto& p : T) {
-			for(auto& i : E) {
+			for(auto& i : E2) {
 				sum += m * y[i][p];
 			}
 		}
+		sum += m * (e - E2.size());
 		model.setObjective(sum, GRB_MINIMIZE);
 
 		/*Constraints*/
@@ -609,8 +622,11 @@ int main() {
 		sum = 0;
 		for (auto& p : T) {
 			for (auto& k : A) {
-				if (k.first != 0) {
+				if (k.first != 0 && C7.find(k.first) == C7.end()) {
 					sum += g[k.first - 1] * x[k.first][k.second - 1][p];
+				}
+				else if (k.first != 0 && C7.find(k.first) != C7.end()) {
+					sum += g[k.first - 1] * x[k.first][k.second - 1][p] - (1 - delta[k.first][p]) * g[k.first - 1];
 				}
 			}
 			name = "c16_p" + to_string(p);
@@ -624,8 +640,11 @@ int main() {
 		sum = 0;
 		for (auto& p : T) {
 			for (auto& k : A) {
-				if (k.first != 0) {
+				if (k.first != 0 && C7.find(k.first) == C7.end()) {
 					sum += o[k.first - 1] * x[k.first][k.second - 1][p];
+				}
+				else if (k.first != 0 && C7.find(k.first) != C7.end()) {
+					sum += o[k.first - 1] * x[k.first][k.second - 1][p] - (1 - delta[k.first][p]) * o[k.first - 1];
 				}
 			}
 			name = "c17_p" + to_string(p);
@@ -671,7 +690,7 @@ int main() {
 		sum = 0;
 		sum2 = 0;
 		set<int> c21obj = C;
-		C.insert(0);
+		c21obj.insert(0);
 		for (auto& p : T) {
 			for (auto& j : C3) {
 				for (auto& k : E1) sum += y[k][p];
@@ -735,13 +754,23 @@ int main() {
 				sum2 = 0;
 			}
 		}
+
 		//25
 		sum = 0;
 		for (auto& k : E) {
 			for (auto& p : T) {
 				sum += y[k][p];
 			}
-			name = "c25_p" + to_string(k);
+			name = "c25_i" + to_string(k);
+			model.addConstr(sum <= 1, name);
+			sum = 0;
+		}
+
+		//26
+		sum = 0;
+		for (auto& i : C7) {
+			for (auto& p : T) sum += delta[i][p];
+			name = "c26_i" + to_string(i);
 			model.addConstr(sum <= 1, name);
 			sum = 0;
 		}
