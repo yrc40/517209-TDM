@@ -19,8 +19,7 @@ int main() {
 		system("pause");
 		exit(1);
 	}
-	else
-		cout << "File open successfully!\n";
+	else cout << "File open successfully!\n";
 
 	int c, M, e, v, K;
 	fin >> c >> M >> e >> v >> K;
@@ -776,7 +775,9 @@ int main() {
 		}
 
 		model.optimize();
-		cout << "xijp:\n";
+
+
+		cout << "*--- Result ---*\nxijp:\n";
 		for (auto& p : T) {
 			for (int i = 0; i < c + 1; i++) {
 				for (int j = 1; j <= c + 1; j++) {
