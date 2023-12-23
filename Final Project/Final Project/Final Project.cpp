@@ -216,10 +216,10 @@ int main() {
 		cout << i << " ";
 	}
 
-	vector<int> o;
+	vector<double> o;
 	for (int i = 0; i < c; i++) {
-		fin >> inputint;
-		o.push_back(inputint);
+		fin >> inputdouble;
+		o.push_back(inputdouble);
 	}
 	cout << "\noi: ";
 	for (auto& i : o) {
@@ -256,20 +256,20 @@ int main() {
 		cout << i << " ";
 	}
 
-	vector<int> V;
+	vector<double> V;
 	for (int i = 0; i < K; i++) {
-		fin >> inputint;
-		V.push_back(inputint);
+		fin >> inputdouble;
+		V.push_back(inputdouble);
 	}
 	cout << "\nVi: ";
 	for (auto& i : V) {
 		cout << i << " ";
 	}
 
-	vector<int> W;
+	vector<double> W;
 	for (int i = 0; i < K; i++) {
-		fin >> inputint;
-		W.push_back(inputint);
+		fin >> inputdouble;
+		W.push_back(inputdouble);
 	}
 	cout << "\nWi: ";
 	for (auto& i : W) {
@@ -619,22 +619,24 @@ int main() {
 		set<int> c16obj = I;
 		c16obj.erase(0);
 		GRBLinExpr sum2 = 0;
-		sum = 0;
+		/*sum = 0;
 		for (auto& p : T) {
 			for (auto& k : A) {
 				if (k.first != 0 && C7.find(k.first) == C7.end()) {
 					sum += g[k.first - 1] * x[k.first][k.second - 1][p];
 				}
 				else if (k.first != 0 && C7.find(k.first) != C7.end()) {
-					sum += g[k.first - 1] * x[k.first][k.second - 1][p] - (1 - delta[k.first][p]) * g[k.first - 1];
+					sum +=  delta[k.first][p] * g[k.first - 1];
 				}
 			}
+			model.update();
+			//cout << sum << "\n";
 			name = "c16_p" + to_string(p);
 			if (T1.find(p) != T1.end()) model.addConstr(sum <= W[0], name);
 			else if (T2.find(p) != T2.end()) model.addConstr(sum <= W[1], name);
 			else if (T3.find(p) != T3.end()) model.addConstr(sum <= W[2], name);
 			sum = 0;
-		}
+		}*/
 
 		//17
 		sum = 0;
@@ -642,15 +644,27 @@ int main() {
 			for (auto& k : A) {
 				if (k.first != 0 && C7.find(k.first) == C7.end()) {
 					sum += o[k.first - 1] * x[k.first][k.second - 1][p];
-				}
-				else if (k.first != 0 && C7.find(k.first) != C7.end()) {
-					sum += o[k.first - 1] * x[k.first][k.second - 1][p] - (1 - delta[k.first][p]) * o[k.first - 1];
+					//cout << "Success\n";
 				}
 			}
+			for (auto& i : C7) {
+				sum += delta[i][p] * o[i - 1];
+			}
+			model.update();
+			cout << sum << "\n";
 			name = "c17_p" + to_string(p);
-			if (T1.find(p) != T1.end()) model.addConstr(sum <= V[0], name);
-			else if (T2.find(p) != T2.end()) model.addConstr(sum <= V[1], name);
-			else if (T3.find(p) != T3.end()) model.addConstr(sum <= V[2], name);
+			if (T1.find(p) != T1.end()) {
+				model.addConstr(sum <= V[0], name);
+				//cout << "addconst1\n";
+			} 
+			else if (T2.find(p) != T2.end()) {
+				model.addConstr(sum <= V[1], name);
+				//cout << "addconst2\n";
+			} 
+			else if (T3.find(p) != T3.end()) {
+				model.addConstr(sum <= V[2], name);
+				//cout << "addconst3\n";
+			} 
 			sum = 0;
 		}
 
@@ -771,10 +785,15 @@ int main() {
 		for (auto& i : C7) {
 			for (auto& p : T) sum += delta[i][p];
 			name = "c26_i" + to_string(i);
-			model.addConstr(sum <= 1, name);
+			model.addConstr(sum == 1, name);
 			sum = 0;
 		}
 
+		//0=0
+		sum = 0;
+		model.addConstr(sum == 0, "test");
+		model.update();
+		model.getConstrByName("test");
 		model.optimize();
 		cout << "xijp:\n";
 		for (auto& p : T) {
@@ -792,6 +811,12 @@ int main() {
 				cout << abs(y[i][p].get(GRB_DoubleAttr_X)) << " ";
 			}
 			cout << "\n";
+		}
+		cout << "delta\n";
+		for (auto& i : C7) {
+			for (auto& p : T) {
+				cout << delta[i][p].get(GRB_DoubleAttr_X)<< "\n";
+			}
 		}
 		
 		//model.computeIIS();
