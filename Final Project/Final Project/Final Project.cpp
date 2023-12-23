@@ -1,5 +1,5 @@
-﻿#include <iostream>
-#include <fstream>
+﻿#include<iostream>
+#include<fstream>
 #include<set>
 #include<utility>
 #include<algorithm>
@@ -11,6 +11,7 @@ int main() {
 
 	int inputint;
 	double inputdouble;
+	long long inputlong;
 
 	fstream fin;
 	fin.open("C:/Users/User/Desktop/data/case1.txt", ios::in);
@@ -215,10 +216,10 @@ int main() {
 		cout << i << " ";
 	}
 
-	vector<int> o;
+	vector<double> o;
 	for (int i = 0; i < c; i++) {
-		fin >> inputint;
-		o.push_back(inputint);
+		fin >> inputdouble;
+		o.push_back(inputdouble);
 	}
 	cout << "\noi: ";
 	for (auto& i : o) {
@@ -255,10 +256,10 @@ int main() {
 		cout << i << " ";
 	}
 
-	vector<int> V;
+	vector<double> V;
 	for (int i = 0; i < K; i++) {
-		fin >> inputint;
-		V.push_back(inputint);
+		fin >> inputdouble;
+		V.push_back(inputdouble);
 	}
 	cout << "\nVi: ";
 	for (auto& i : V) {
@@ -335,7 +336,7 @@ int main() {
 			}
 			x.push_back(len);
 		}
-		cout << "x0: " << x[0].size();
+		//cout << "x0: " << x[0].size();
 
 		vector<GRBVar> U; //Ui
 		for (int i = 0; i <= c; i++) {
@@ -558,7 +559,7 @@ int main() {
 			for (auto& k : A) {
 				if (C7.find(k.first) != C7.end() && C7.find(k.second) != C7.end()) {
 					name = "c11_i" + to_string(k.first) + "_j" + to_string(k.second) + "_p" + to_string(p);
-					cout << k.first << " " << k.second << "\n";
+					//cout << k.first << " " << k.second << "\n";
 					model.addConstr(U[k.first] + w[k.first][k.second] + s[k.first - 1] - U[k.second] <= (1 - x[k.first][k.second - 1][p]) * M, name);
 				}
 			}
@@ -569,7 +570,7 @@ int main() {
 			for (auto& k : A) {
 				if (C7.find(k.first) != C7.end() && c9obj2.find(k.second) != c9obj2.end()) {
 					name = "c12_i" + to_string(k.first) + "_j" + to_string(k.second) + "_p" + to_string(p);
-					cout << k.first << " " << k.second << "\n";
+					//cout << k.first << " " << k.second << "\n";
 					model.addConstr(U[k.first] + w[k.first][k.second] + s[k.first - 1] - u[k.second][p] <= (1 - x[k.first][k.second - 1][p]) * M, name);
 				}
 			}
@@ -619,7 +620,9 @@ int main() {
 		c16obj.erase(0);
 		GRBLinExpr sum2 = 0;
 		sum = 0;
+		int sum3 = 0;
 		for (auto& p : T) {
+			sum = 0;
 			for (auto& k : A) {
 				if (k.first != 0 && C7.find(k.first) == C7.end()) {
 					sum += g[k.first - 1] * x[k.first][k.second - 1][p];
@@ -632,7 +635,6 @@ int main() {
 			if (T1.find(p) != T1.end()) model.addConstr(sum <= W[0], name);
 			else if (T2.find(p) != T2.end()) model.addConstr(sum <= W[1], name);
 			else if (T3.find(p) != T3.end()) model.addConstr(sum <= W[2], name);
-			sum = 0;
 		}
 
 		//17
@@ -731,6 +733,7 @@ int main() {
 				for (auto& i : c21obj) {
 					if(i != j) sum2 += x[i][j - 1][p];
 				}
+				//cout << j << "\n";
 				name = "c23_p" + to_string(p) + "_j" + to_string(j);
 				model.addConstr(2 * sum2 <= sum, name);
 				sum = 0;
@@ -747,8 +750,9 @@ int main() {
 				for (auto& i : c21obj) {
 					if (i != j) sum2 += x[i][j - 1][p];
 				}
+				//cout << j << "\n";
 				name = "c24_p" + to_string(p) + "_j" + to_string(j);
-				model.addConstr(4 * sum2 <= sum, name);
+				model.addConstr(2 * sum2 <= sum, name);
 				sum = 0;
 				sum2 = 0;
 			}

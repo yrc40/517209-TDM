@@ -1,3 +1,4 @@
 ﻿  Final Project.cpp
 E:\coursesMaterial\1121\517209-TDM\Final Project\Final Project\Final Project.cpp(389,12): warning C4244: '引數': 將 'unsigned __int64' 轉換為 'double'，由於類型不同，可能導致資料遺失
+E:\coursesMaterial\1121\517209-TDM\Final Project\Final Project\Final Project.cpp(14,12): warning C4101: 'inputlong': 未參考的區域變數
   Final Project.vcxproj -> E:\coursesMaterial\1121\517209-TDM\Final Project\x64\Debug\Final Project.exe
