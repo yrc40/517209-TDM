@@ -409,6 +409,7 @@ int main() {
 			sum = 0;
 		}
 		
+		//c2
 		set<int> c1obj2;
 		set_union(C4.begin(), C4.end(), C5.begin(), C5.end(),
 			std::inserter(c1obj2, c1obj2.begin()));
@@ -424,13 +425,12 @@ int main() {
 					if (j == i.second) sum += x[i.first][i.second - 1][p];
 				}
 			}
-			name = "c1-2_j" + to_string(j);
+			name = "c2_j" + to_string(j);
 			model.addConstr(sum == 1, name);
 			sum = 0;
 		}
 
-		//c2
-		
+		//c3
 		sum = 0;
 		for (auto& i : C7) {
 			for (auto& p : c2obj) {
@@ -440,12 +440,12 @@ int main() {
 					}
 				}
 			}
-			name = "c2_i" + to_string(i);
+			name = "c3_i" + to_string(i);
 			model.addConstr(sum == 2, name);
 			sum = 0;
 		}
 
-		//c3
+		//c4
 		sum = 0;
 		for (auto& j : C7) {
 			for (auto& p : c2obj) {
@@ -455,12 +455,12 @@ int main() {
 					}
 				}
 			}
-			name = "c3_j" + to_string(j);
+			name = "c4_j" + to_string(j);
 			model.addConstr(sum == 2, name);
 			sum = 0;
 		}
 
-		//c4
+		//c5
 		sum = 0;
 		for (auto& p : T) {
 			for (auto& j : C7) {
@@ -469,13 +469,13 @@ int main() {
 						sum += x[i][j - 1][p];
 					}
 				}
-				name = "c4_p" + to_string(p) + "_j" + to_string(j);
+				name = "c5_p" + to_string(p) + "_j" + to_string(j);
 				model.addConstr(sum <= 1, name);
 				sum = 0;
 			}
 		}
 
-		//c5
+		//c6
 		sum = 0;
 		for (auto& j : C7) {
 			for (auto& p : T1) {
@@ -485,12 +485,12 @@ int main() {
 					}
 				}
 			}
-			name = "c5_j" + to_string(j);
+			name = "c6_j" + to_string(j);
 			model.addConstr(sum == 0, name);
 			sum = 0;
 		}
 
-		//c6
+		//c7
 		sum = 0;
 		for (auto& p : T) {
 			for (auto& k : A) {
@@ -498,12 +498,12 @@ int main() {
 					sum += x[0][k.second - 1][p];
 				}
 			}
-			name = "c6_p" + to_string(p);
+			name = "c7_p" + to_string(p);
 			model.addConstr(sum == 1, name);
 			sum = 0;
 		}
 
-		//c7
+		//c8
 		sum = 0;
 		for (auto& j : C) {
 			for (auto& p : T) {
@@ -511,24 +511,24 @@ int main() {
 					if (k.second == j) sum += x[k.first][j - 1][p];
 					if (k.first == j) sum -= x[j][k.second - 1][p];
 				}
-				name = "c7_j" + to_string(j) + "_p" + to_string(p);
+				name = "c8_j" + to_string(j) + "_p" + to_string(p);
 				model.addConstr(sum == 0, name);
 				sum = 0;
 			}
 		}
 
-		//c8
+		//c9
 		sum = 0;
 		for (auto& p : T) {
 			for (auto& k : A) {
 				if (k.second == c + 1) sum += x[k.first][c][p];
 			}
-			name = "c8_p" + to_string(p);
+			name = "c9_p" + to_string(p);
 			model.addConstr(sum == 1, name);
 			sum = 0;
 		}
 		
-		//c9
+		//c10
 		set<int> c9obj1; // I\C7&&{c+1}
 		set_difference(I.begin(), I.end(),C7.begin(), C7.end(), std::inserter(c9obj1, c9obj1.begin()));
 		c9obj1.erase(c + 1);
@@ -538,27 +538,27 @@ int main() {
 		for (auto& p : T) {
 			for (auto& k : A) {
 				if (c9obj1.find(k.first) != c9obj1.end() && c9obj2.find(k.second) != c9obj2.end()) {
-					name = "c9_i" + to_string(k.first) + "_j" + to_string(k.second) + "_p" + to_string(p);
+					name = "c10_i" + to_string(k.first) + "_j" + to_string(k.second) + "_p" + to_string(p);
 					model.addConstr(u[k.first][p] + w[k.first][k.second] + s[k.first-1] - u[k.second][p] <= (1 - x[k.first][k.second-1][p]) * M, name);
 				} 
 			}
 		}
-		//10
+		//11
 		for (auto& p : T) {
 			for (auto& k : A) {
 				if (c9obj1.find(k.first) != c9obj1.end() && C7.find(k.second) != C7.end()) {
-					name = "c10_i" + to_string(k.first) + "_j" + to_string(k.second) + "_p" + to_string(p);
+					name = "c11_i" + to_string(k.first) + "_j" + to_string(k.second) + "_p" + to_string(p);
 					cout << k.first << " " << k.second << "\n";
 					model.addConstr(u[k.first][p] + w[k.first][k.second] + s[k.first - 1] - U[k.second] <= (1 - x[k.first][k.second - 1][p]) * M, name);
 				}
 			}
 		}
 
-		//11
+		//12
 		for (auto& p : T) {
 			for (auto& k : A) {
 				if (C7.find(k.first) != C7.end() && C7.find(k.second) != C7.end()) {
-					name = "c11_i" + to_string(k.first) + "_j" + to_string(k.second) + "_p" + to_string(p);
+					name = "c12_i" + to_string(k.first) + "_j" + to_string(k.second) + "_p" + to_string(p);
 					//cout << k.first << " " << k.second << "\n";
 					model.addConstr(U[k.first] + w[k.first][k.second] + s[k.first - 1] - U[k.second] <= (1 - x[k.first][k.second - 1][p]) * M, name);
 				}
@@ -619,16 +619,16 @@ int main() {
 		set<int> c16obj = I;
 		c16obj.erase(0);
 		GRBLinExpr sum2 = 0;
-		/*sum = 0;
+		sum = 0;
 		for (auto& p : T) {
 			sum = 0;
 			for (auto& k : A) {
 				if (k.first != 0 && C7.find(k.first) == C7.end()) {
 					sum += g[k.first - 1] * x[k.first][k.second - 1][p];
 				}
-				else if (k.first != 0 && C7.find(k.first) != C7.end()) {
-					sum +=  delta[k.first][p] * g[k.first - 1];
-				}
+			}
+			for (auto& i : C7) {
+				sum += delta[i][p] * g[i - 1];
 			}
 			model.update();
 			//cout << sum << "\n";
@@ -637,7 +637,7 @@ int main() {
 			else if (T2.find(p) != T2.end()) model.addConstr(sum <= W[1], name);
 			else if (T3.find(p) != T3.end()) model.addConstr(sum <= W[2], name);
 			sum = 0;
-		}*/
+		}
 
 		//17
 		sum = 0;
@@ -794,25 +794,19 @@ int main() {
 
 		//27
 		sum = 0;
-		for (auto& p : T) {
-			for (auto& i : C7) {
-				sum = 0;
-				for (auto& j : C) {
-					sum += x[0][j-1][p];
+		for (auto& j : C7) {
+			for (auto& p : c14obj) { // T\T1
+				for (auto& k : A) {
+					if (k.second == j) {
+						sum += x[k.first][j - 1][p];
+					}
 				}
-				model.update();
-				cout << sum << "\n";
-				name = "c27_i" + to_string(i) + "_p" + to_string(p);
-				model.addConstr(sum >= delta[i][p], name);
+				name = "c27_j" + to_string(j) + "_p" + to_string(p);
+				model.addConstr(sum >= delta[j][p], name);
+				sum = 0;
 			}
 		}
 
-		/*
-		sum = 0;
-		model.addConstr(sum == 0, "test");
-		model.update();
-		model.getConstrByName("test");
-		*/
 		model.optimize();
 
 
@@ -833,11 +827,44 @@ int main() {
 			}
 			cout << "\n";
 		}
-		cout << "delta\n";
-		for (auto& i : C7) {
-			for (auto& p : T) {
-				cout << delta[i][p].get(GRB_DoubleAttr_X)<< "\n";
+		
+		cout << "*--- Report ---*\n";
+		cout << "Objective Value(Totoal Cost of a Day): " << model.get(GRB_DoubleAttr_ObjVal) << " NTD\n";
+		cout << "\n## Start Time of Each Customer: \n";
+		for (auto& i : C) {
+			cout << "Customer" + to_string(i) + ": ";
+			if (C7.find(i) != C7.end()) cout << U[i].get(GRB_DoubleAttr_X) << "\n";
+			else {
+				for (auto& p : T) {
+					if (u[i][p].get(GRB_DoubleAttr_X) != 360 && u[i][p].get(GRB_DoubleAttr_X) != 1080 && u[i][p].get(GRB_DoubleAttr_X) != 0) {
+						cout << u[i][p].get(GRB_DoubleAttr_X) << "\n";
+						break;
+					}
+				}
 			}
+
+		}
+		cout << "\n## Route of Each Truck: \n";
+		for (auto& p : T) {
+			cout << "Truck" + to_string(p) + ": ";
+			int next = 0;
+			for (int i = 0; i < c + 1; i++) {
+				for (int j = 1; j <= c + 1; j++) {
+					if (x[next][j-1][p].get(GRB_DoubleAttr_X) == 1) {
+						cout << next << " -> ";
+						next = j;
+					}
+				}
+				if (next == c + 1) break;
+			}
+			cout << next << "\n";
+			cout << "Workers in Truck: ";
+			for (auto& i : E) {
+				if (y[i][p].get(GRB_DoubleAttr_X) == 1) {
+					cout << i << " ";
+				}
+			}
+			cout << "\n";
 		}
 		
 		//model.computeIIS();
